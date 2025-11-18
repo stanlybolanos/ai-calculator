@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Avanzada de Estrategia de IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Lato', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+        :root {
+            --theme-text-header: #004E89;
+            --theme-text-dark: #1e293b;
+            --theme-text-light: #475569;
+            --theme-accent-blue: #004E89;
+            --theme-bg-tile: #F8FAFC;
+            --theme-border-light: #E2E8F0;
+            --color-build: #ef4444;
+            --color-buy: #3b82f6;
+            --color-rent: #22c55e;
+            --color-warn: #f97316;
+        }
+        .btn-primary { background-color: var(--theme-accent-blue); color: white; transition: background-color 0.3s; }
+        .btn-primary:hover { background-color: #003a66; }
+        .result-card { background-color: var(--theme-bg-tile); border: 1px solid var(--theme-border-light); border-left-width: 4px; }
+        .result-build { border-color: var(--color-build); }
+        .result-buy { border-color: var(--color-buy); }
+        .result-rent { border-color: var(--color-rent); }
+        .result-warn { border-color: var(--color-warn); }
+        select:focus, input:focus {
+            box-shadow: 0 0 0 2px var(--theme-accent-blue);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center mb-2" style="color: var(--theme-text-header);">Calculadora Avanzada de Estrategia de IA</h1>
+        <p class="text-center text-lg mb-8" style="color: var(--theme-text-light);">Una herramienta de taller para evaluar la decisión "Construir vs. Comprar vs. Rentar".</p>
+
+        <!-- Formulario de Entradas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            
+            <!-- 1. Talento Técnico General -->
+            <div>
+                <label for="technical-talent" class="block text-sm font-medium text-gray-700">1. Talento Técnico General</label>
+                <select id="technical-talent" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="baja">Baja (Sin equipo de TI/datos dedicado)</option>
+                    <option value="media">Media (Equipo de TI/desarrolladores, pero sin ML)</option>
+                    <option value="alta">Alta (Equipo dedicado de Data Science y MLOps)</option>
+                </select>
+            </div>
+            
+            <!-- 2. Composición del Talento -->
+            <div>
+                <label for="talent-composition" class="block text-sm font-medium text-gray-700">2. Composición del Talento</label>
+                <select id="talent-composition" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="ninguno">Ninguno / Solo TI Básico</option>
+                    <option value="analistas">Analistas de BI / "Citizen Data Scientists"</option>
+                    <option value="desarrolladores">Desarrolladores de Software</option>
+                    <option value="especialistas-ml">Especialistas en ML / Data Scientists</option>
+                </select>
+            </div>
+            
+            <!-- 3. Presupuesto / Tolerancia TCO -->
+            <div>
+                <label for="budget" class="block text-sm font-medium text-gray-700">3. Presupuesto / Tolerancia al TCO</label>
+                <select id="budget" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="bajo">Bajo (Miles de $, OpEx predecible)</option>
+                    <option value="medio">Medio (Cientos de miles, CapEx/OpEx)</option>
+                    <option value="alto">Alto (Millones, inversión estratégica)</option>
+                </select>
+            </div>
+
+            <!-- 4. Urgencia / Tiempo de Valor -->
+            <div>
+                <label for="time-to-value" class="block text-sm font-medium text-gray-700">4. Urgencia (Tiempo para ver Valor)</label>
+                <select id="time-to-value" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="urgente">Urgente (< 6 meses)</option>
+                    <option value="estandar">Estándar (1-2 años)</option>
+                    <option value="largo-plazo">Largo Plazo (3+ años, I+D)</option>
+                </select>
+            </div>
+            
+            <!-- 5. Madurez de los Datos -->
+            <div>
+                <label for="data-readiness" class="block text-sm font-medium text-gray-700">5. Madurez de los Datos</label>
+                <select id="data-readiness" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="desordenados">Desordenados / Silos (Requiere limpieza masiva)</option>
+                    <option value="limpios">Limpios y Centralizados (Listos para análisis)</option>
+                    <option value="etiquetados">Etiquetados y Listos para ML (¡El sueño!)</option>
+                </select>
+            </div>
+
+            <!-- 6. Sensibilidad de Datos -->
+            <div>
+                <label for="data-sensitivity" class="block text-sm font-medium text-gray-700">6. Sensibilidad de los Datos</label>
+                <select id="data-sensitivity" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="baja">Baja (Públicos o no sensibles, pueden ir a la nube)</option>
+                    <option value="alta">Alta (Médicos, financieros. Requiere on-premise o VPC)</option>
+                </select>
+            </div>
+            
+            <!-- 7. Importancia Estratégica -->
+            <div>
+                <label for="strategic-importance" class="block text-sm font-medium text-gray-700">7. Importancia Estratégica del Problema</label>
+                <select id="strategic-importance" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="optimizacion">Optimización (Reducir costos, mejorar eficiencia)</option>
+                    <option value="mejora">Mejora (Nueva función en un producto existente)</option>
+                    <option value="central">Central (El producto *es* el modelo de IA, ventaja competitiva)</option>
+                </select>
+            </div>
+
+            <!-- 8. Tolerancia al Riesgo -->
+            <div>
+                <label for="risk-tolerance" class="block text-sm font-medium text-gray-700">8. Tolerancia al Riesgo de Falla (I+D)</label>
+                <select id="risk-tolerance" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                    <option value="baja">Baja (El proyecto *debe* funcionar y dar ROI)</option>
+                    <option value="media">Media (Se acepta el fracaso de algunos pilotos)</option>
+                    <option value="alta">Alta (Se acepta la falla como parte de la exploración)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Botón de Calcular -->
+        <div class="text-center mb-8">
+            <button id="calculate-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">
+                <i class="fas fa-calculator mr-2"></i>Calcular Estrategia
+            </button>
+        </div>
+
+        <!-- Contenedor de Resultado -->
+        <div id="result-container" class="hidden space-y-6">
+            <h2 class="text-2xl font-bold mb-4 text-center" style="color: var(--theme-text-header);">Recomendación Estratégica</h2>
+            
+            <!-- Banderas Rojas -->
+            <div id="warnings-container" class="hidden">
+                <h3 class="text-2xl font-bold mb-3 text-center" style="color: var(--color-warn);">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Banderas Rojas Identificadas
+                </h3>
+                <div id="warnings-list" class="result-card result-warn rounded-lg p-6 text-base" style="color: var(--theme-text-dark);">
+                    <!-- Las advertencias se insertarán aquí -->
+                </div>
+            </div>
+
+            <!-- Recomendación Principal -->
+            <div id="recommendation-card" class="result-card rounded-lg p-6">
+                <h3 id="result-title" class="text-3xl font-bold mb-3"></h3>
+                <p id="result-justification" class="text-lg mb-4" style="color: var(--theme-text-dark);"></p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-md border">
+                        <h4 class="font-bold text-sm uppercase" style="color: var(--theme-text-light);">TCO Estimado</h4>
+                        <p id="result-tco" class="text-xl font-semibold" style="color: var(--theme-text-header);"></p>
+                    </div>
+                    <div class="bg-white p-4 rounded-md border">
+                        <h4 class="font-bold text-sm uppercase" style="color: var(--theme-text-light);">ROI Potencial</h4>
+                        <p id="result-roi" class="text-xl font-semibold" style="color: var(--theme-text-header);"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('calculate-btn').addEventListener('click', function() {
+            // 1. Obtener valores
+            const talent = document.getElementById('technical-talent').value;
+            const composition = document.getElementById('talent-composition').value;
+            const budget = document.getElementById('budget').value;
+            const timeToValue = document.getElementById('time-to-value').value;
+            const dataReadiness = document.getElementById('data-readiness').value;
+            const dataSensitivity = document.getElementById('data-sensitivity').value;
+            const importance = document.getElementById('strategic-importance').value;
+            const riskTolerance = document.getElementById('risk-tolerance').value;
+
+            // 2. Sistema de Puntuación
+            let buildScore = 0;
+            let buyScore = 0;
+            let rentScore = 0;
+            let warnings = [];
+
+            // Talento
+            if (talent === 'alta' && composition === 'especialistas-ml') buildScore += 3;
+            if (talent === 'media' && (composition === 'desarrolladores' || composition === 'analistas')) buyScore += 2;
+            if (talent === 'baja' || composition === 'ninguno') rentScore += 3;
+
+            // Presupuesto
+            if (budget === 'alto') buildScore += 2;
+            if (budget === 'medio') buyScore += 2;
+            if (budget === 'bajo') rentScore += 2;
+
+            // Tiempo de Valor
+            if (timeToValue === 'largo-plazo') buildScore += 2;
+            if (timeToValue === 'estandar') buyScore += 1;
+            if (timeToValue === 'urgente') rentScore += 2;
+
+            // Madurez de Datos
+            if (dataReadiness === 'etiquetados') { buildScore += 2; buyScore += 1; }
+            if (dataReadiness === 'limpios') { buyScore += 1; rentScore += 1; }
+            if (dataReadiness === 'desordenados') { rentScore += 1; } // Build y Buy son difíciles aquí
+
+            // Sensibilidad de Datos
+            if (dataSensitivity === 'alta') { buildScore += 1; buyScore += 1; } // Rent es más difícil
+            if (dataSensitivity === 'baja') { rentScore += 1; }
+
+            // Importancia Estratégica
+            if (importance === 'central') buildScore += 3;
+            if (importance === 'mejora') buyScore += 2;
+            if (importance === 'optimizacion') rentScore += 2;
+
+            // Tolerancia al Riesgo
+            if (riskTolerance === 'alta') buildScore += 2;
+            if (riskTolerance === 'media') buyScore += 1;
+            if (riskTolerance === 'baja') rentScore += 2;
+
+            // 3. Banderas Rojas (Advertencias)
+            if (dataReadiness === 'desordenados' && (importance === 'central' || budget === 'alto')) {
+                warnings.push('<strong>¡Datos no listos!</strong> Tienes alta ambición/presupuesto pero tus datos están desordenados. Tu primer proyecto *debe* ser de Arquitectura de Información (AI), no de IA.');
+            }
+            if ((talent === 'baja' || composition === 'ninguno') && (importance === 'central' || budget === 'alto')) {
+                warnings.push('<strong>¡Sin Talento!</strong> Tienes un gran presupuesto pero no tienes el equipo. Corres el riesgo de ser estafado por consultores caros. Empieza por "Rentar" para aprender antes de "Comprar" o "Construir".');
+            }
+            if (importance === 'central' && (budget === 'bajo' || timeToValue === 'urgente')) {
+                warnings.push('<strong>¡Desajuste Estratégico!</strong> Defines el problema como "Central" para tu negocio, pero tienes un presupuesto bajo o un tiempo de entrega urgente. Esto es una receta para el fracaso. Los proyectos centrales son caros y lentos.');
+            }
+            if (riskTolerance === 'baja' && importance === 'central') {
+                warnings.push('<strong>¡Aversión al Riesgo!</strong> Los proyectos de IA "Centrales" (Build) son exploratorios. Tu baja tolerancia al riesgo es incompatible con una estrategia de "Construir". Considera "Comprar" una solución probada.');
+            }
+
+            // 4. Decisión Final
+            let recommendation = '';
+            let justification = '';
+            let tco = '';
+            let roi = '';
+            let cardClass = '';
+
+            // Lógica de decisión final
+            if (buildScore > buyScore && buildScore > rentScore) {
+                recommendation = 'CONSTRUIR (Build)';
+                justification = 'Tu perfil (alto talento, presupuesto, y un problema estratégico único) sugiere que "Construir" tu propio AI Factory es el camino. Es la inversión más cara y lenta, pero eres una de las pocas empresas que puede crear una ventaja competitiva real y duradera.';
+                tco = 'Alto (Millones)';
+                roi = 'Alto, pero a Largo Plazo (Incierto)';
+                cardClass = 'result-build';
+            } else if (buyScore > buildScore && buyScore > rentScore) {
+                recommendation = 'COMPRAR (Buy)';
+                justification = 'No necesitas reinventar la rueda. Tienes un equipo de TI/analistas ("Citizen Data Scientists") y un problema estándar. "Comprar" una plataforma AutoML (Low-code) te dará el 80% del valor por el 20% del costo de "Construir".';
+                tco = 'Medio (Cientos de Miles)';
+                roi = 'Medio y Rápido (Predecible)';
+                cardClass = 'result-buy';
+            } else {
+                recommendation = 'RENTAR (Rent)';
+                justification = 'Tu perfil (presupuesto bajo, falta de talento, o necesidad urgente) apunta a "Rentar". No inviertas en un equipo o plataforma. Paga por un resultado específico a través de un SaaS o un consultor. Esta es la forma más rápida y segura de obtener valor y democratizar la IA para tu negocio.';
+                tco = 'Bajo (Miles)';
+                roi = 'Rápido y Claro (Definido)';
+                cardClass = 'result-rent';
+            }
+
+            // 5. Mostrar resultados
+            document.getElementById('result-title').innerText = recommendation;
+            document.getElementById('result-justification').innerText = justification;
+            document.getElementById('result-tco').innerText = tco;
+            document.getElementById('result-roi').innerText = roi;
+            
+            const card = document.getElementById('recommendation-card');
+            card.className = 'result-card rounded-lg p-6'; // Reset classes
+            card.classList.add(cardClass);
+
+            // Mostrar Banderas Rojas si existen
+            const warningsContainer = document.getElementById('warnings-container');
+            const warningsList = document.getElementById('warnings-list');
+            if (warnings.length > 0) {
+                warningsList.innerHTML = '<ul>' + warnings.map(w => `<li class="mb-2">${w}</li>`).join('') + '</ul>';
+                warningsContainer.classList.remove('hidden');
+            } else {
+                warningsContainer.classList.add('hidden');
+            }
+
+            document.getElementById('result-container').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
